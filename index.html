@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Preeti! 🌸</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Mali:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Mali', cursive;
+            background-color: #fff0f5;
+            background-image: radial-gradient(#ffd1dc 2px, transparent 2px), radial-gradient(#ffd1dc 2px, transparent 2px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            min-height: 100vh;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="hotpink"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') 10 10, auto;
+            overflow-x: hidden;
+        }
+
+        /* Cute Emoji Background Pattern */
+        .emoji-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.4;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='5' y='20' font-size='14'%3E🌸%3C/text%3E%3Ctext x='35' y='45' font-size='14'%3E💖%3C/text%3E%3Ctext x='45' y='15' font-size='12'%3E✨%3C/text%3E%3Ctext x='15' y='50' font-size='12'%3E🎀%3C/text%3E%3C/svg%3E");
+        }
+
+        h1,
+        h2,
+        .font-heading {
+            font-family: 'Fredoka One', cursive;
+            text-shadow: 2px 2px 0px #fff, 4px 4px 0px rgba(255, 182, 193, 0.5);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px 0 rgba(255, 182, 193, 0.3);
+        }
+
+        /* Sakura Animation */
+        .sakura {
+            position: absolute;
+            top: -10%;
+            background: #ffb7b2;
+            border-radius: 100% 0 100% 0;
+            animation: fall linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10%;
+                transform: translateX(0) rotate(0deg);
+                opacity: 0.8;
+            }
+
+            100% {
+                top: 110%;
+                transform: translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Shake Animation */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        /* Slider transition */
+        .slide {
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Floating Hearts */
+        .float-heart {
+            position: absolute;
+            color: #ff69b4;
+            animation: floatUp 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-80px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Polaroid Frame */
+        .polaroid {
+            background: white;
+            padding: 1rem;
+            padding-bottom: 3.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+            z-index: 20;
+        }
+
+        .cake-img {
+            mix-blend-mode: multiply;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center relative" onclick="createHeart(event)">
+    <!-- Backgrounds -->
+    <div class="emoji-bg"></div>
+    <div id="sakura-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Screen 1: Lock Screen -->
+    <div id="lock-screen"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-pink-50/95 backdrop-blur-sm transition-all duration-700">
+        <div class="glass p-8 rounded-3xl text-center max-w-sm w-full mx-4 shadow-2xl border-pink-200">
+            <div class="text-6xl mb-4 animate-bounce">🔒</div>
+            <h1 class="text-3xl text-pink-500 mb-2">Secret Area!</h1>
+            <p class="text-gray-600 mb-6 text-sm italic">"Shh... A magical surprise awaits you inside! ✨"</p>
+
+            <div class="relative">
+                <input type="password" id="password-input"
+                    class="w-full p-4 rounded-xl border-2 border-pink-200 focus:border-pink-400 outline-none text-center text-2xl mb-4 bg-white/70 placeholder-pink-300 tracking-widest transition-all focus:ring-4 focus:ring-pink-100"
+                    placeholder="••••" maxlength="4">
+            </div>
+
+            <p id="error-msg" class="text-red-500 font-bold hidden mb-2">Wrong password, baka! 😝</p>
+            <button onclick="checkPassword()"
+                class="w-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg transform hover:scale-105 active:scale-95">Unlock
+                Surprise 🗝️</button>
+
+            <div class="mt-6 text-xs text-pink-400">Hint: Your special day (MMDD)</div>
+        </div>
+    </div>
+
+    <!-- Screen 2: Main Celebration -->
+    <div id="main-screen"
+        class="hidden opacity-0 transition-opacity duration-1000 w-full max-w-2xl mx-auto z-10 p-6 flex-col items-center min-h-screen py-10">
+
+        <!-- Header -->
+        <h1 class="text-4xl md:text-5xl text-center text-pink-500 font-heading mb-8 drop-shadow-sm animate-pulse">Happy
+            Birthday! 🎂</h1>
+
+        <!-- Removed .glass container, now transparent -->
+        <div class="rounded-3xl p-8 relative overflow-visible w-full">
+
+            <!-- Cake Section -->
+            <div class="flex justify-center mb-12 relative">
+                <div class="relative cursor-pointer hover:scale-105 transition-transform duration-500"
+                    onclick="createHeart(event)">
+                    <!-- Cake Image (No Flames) -->
+                    <img src="cake_v2.png" alt="Birthday Cake" class="w-72 md:w-80 h-auto cake-img relative z-10">
+                </div>
+            </div>
+
+            <!-- Action Area -->
+            <div class="text-center relative z-20">
+                <button id="blow-btn" onclick="blowCandles()"
+                    class="bg-gradient-to-r from-purple-400 to-pink-500 text-white font-bold py-4 px-12 rounded-full shadow-xl transform hover:scale-105 transition-transform text-xl animate-bounce ring-4 ring-pink-200 mb-8">
+                    Make a Wish & Blow! 🌬️
+                </button>
+
+                <!-- Hidden Content Reveal -->
+                <div id="hidden-content" class="hidden transition-all duration-1000 opacity-0 transform translate-y-10">
+
+                    <!-- Combined Title -->
+                    <h2
+                        class="text-3xl md:text-5xl text-purple-600 mb-8 font-heading drop-shadow-sm animate-bounce leading-tight">
+                        Happy Birthday Preeti 🎂❤️
+                    </h2>
+
+                    <!-- Photo Slider (Polaroid Style) -->
+                    <div
+                        class="polaroid mx-auto w-full max-w-sm bg-white rotate-1 hover:rotate-0 transition-all duration-500">
+                        <div class="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200">
+                            <img src="photo1.jpeg" class="slide absolute inset-0 w-full h-full object-cover opacity-100"
+                                id="slide-1">
+                            <img src="photo2.jpeg" class="slide absolute inset-0 w-full h-full object-cover opacity-0"
+                                id="slide-2">
+                            <img src="photo3.jpeg" class="slide absolute inset-0 w-full h-full object-cover opacity-0"
+                                id="slide-3">
+                            <img src="photo4.jpeg" class="slide absolute inset-0 w-full h-full object-cover opacity-0"
+                                id="slide-4">
+                        </div>
+                        <div class="mt-4 text-center font-handwriting text-gray-600 text-lg font-bold">The Beautiful You
+                            💖</div>
+                    </div>
+
+                    <div
+                        class="mt-8 text-sm text-pink-400 animate-pulse font-bold bg-white/50 inline-block px-3 py-1 rounded-full">
+                        (Scroll down for more love!)
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Extra Space for scrolling -->
+        <div class="h-24"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="fixed bottom-4 text-center w-full z-40 pointer-events-none">
+        <p
+            class="text-pink-500 font-bold text-sm bg-white/60 inline-block px-4 py-2 rounded-full backdrop-blur-md shadow-sm border border-white/50">
+            Made with ❤️ by KS</p>
+    </div>
+
+    <script>
+        // Sakura Rain
+        function createSakura() {
+            const container = document.getElementById('sakura-container');
+            const petal = document.createElement('div');
+            petal.classList.add('sakura');
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 3 + 2 + 's';
+            petal.style.width = Math.random() * 10 + 10 + 'px';
+            petal.style.height = petal.style.width;
+
+            container.appendChild(petal);
+
+            setTimeout(() => {
+                petal.remove();
+            }, 5000);
+        }
+        setInterval(createSakura, 300);
+
+        // Click Heart Effect
+        function createHeart(e) {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.classList.add('float-heart');
+            heart.style.left = e.clientX + 'px';
+            heart.style.top = e.clientY + 'px';
+            heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1500);
+        }
+
+        // Lock Screen Logic
+        function checkPassword() {
+            const input = document.getElementById('password-input');
+            const lockScreen = document.getElementById('lock-screen');
+            const mainScreen = document.getElementById('main-screen');
+            const errorMsg = document.getElementById('error-msg');
+
+            if (input.value === '0112') {
+                lockScreen.style.opacity = '0';
+                setTimeout(() => {
+                    lockScreen.style.display = 'none';
+                    mainScreen.classList.remove('hidden');
+                    mainScreen.classList.add('flex'); // Ensure flex display
+                    void mainScreen.offsetWidth;
+                    mainScreen.style.opacity = '1';
+                }, 700);
+            } else {
+                errorMsg.classList.remove('hidden');
+                lockScreen.classList.remove('shake');
+                void lockScreen.offsetWidth;
+                lockScreen.classList.add('shake');
+                input.value = '';
+            }
+        }
+
+        // Slider Logic
+        let currentSlide = 1;
+        function startSlider() {
+            setInterval(() => {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('opacity-100');
+                document.getElementById(`slide-${currentSlide}`).classList.add('opacity-0');
+
+                currentSlide = currentSlide % 4 + 1;
+
+                document.getElementById(`slide-${currentSlide}`).classList.remove('opacity-0');
+                document.getElementById(`slide-${currentSlide}`).classList.add('opacity-100');
+            }, 3000);
+        }
+
+        // Web Audio API - Happy Birthday Song
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playNote(freq, duration, startTime) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(startTime);
+
+            // Envelope
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.3, startTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration - 0.05);
+
+            osc.stop(startTime + duration);
+        }
+
+        function playBirthdaySong() {
+            const now = audioCtx.currentTime;
+            const notes = [
+                { f: 261.63, d: 0.4 }, { f: 261.63, d: 0.4 }, { f: 293.66, d: 0.8 }, { f: 261.63, d: 0.8 }, { f: 349.23, d: 0.8 }, { f: 329.63, d: 1.6 }, // Happy Birthday to You
+                { f: 261.63, d: 0.4 }, { f: 261.63, d: 0.4 }, { f: 293.66, d: 0.8 }, { f: 261.63, d: 0.8 }, { f: 392.00, d: 0.8 }, { f: 349.23, d: 1.6 }, // Happy Birthday to You
+                { f: 261.63, d: 0.4 }, { f: 261.63, d: 0.4 }, { f: 523.25, d: 0.8 }, { f: 440.00, d: 0.8 }, { f: 349.23, d: 0.8 }, { f: 329.63, d: 0.8 }, { f: 293.66, d: 0.8 }, // Happy Birthday Dear [Name]
+                { f: 466.16, d: 0.4 }, { f: 466.16, d: 0.4 }, { f: 440.00, d: 0.8 }, { f: 349.23, d: 0.8 }, { f: 392.00, d: 0.8 }, { f: 349.23, d: 1.6 }  // Happy Birthday to You
+            ];
+
+            let time = now;
+            let totalDuration = 0;
+            notes.forEach(note => {
+                playNote(note.f, note.d, time);
+                time += note.d;
+                totalDuration += note.d;
+            });
+
+            // Loop the song
+            setTimeout(playBirthdaySong, totalDuration * 1000 + 1000); // Add 1s pause between loops
+        }
+
+        // Blow Candles Logic
+        function blowCandles() {
+            const btn = document.getElementById('blow-btn');
+            const hiddenContent = document.getElementById('hidden-content');
+
+            // Play Song
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            playBirthdaySong();
+
+            // Hide button
+            btn.style.display = 'none';
+
+            // Confetti
+            var duration = 5000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ffb7b2', '#ffd1dc', '#e6e6fa']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ffb7b2', '#ffd1dc', '#e6e6fa']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Big explosion
+            setTimeout(() => {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }, 500);
+
+            // Reveal Hidden Content (Slider + Message)
+            hiddenContent.classList.remove('hidden');
+            setTimeout(() => {
+                hiddenContent.classList.remove('opacity-0', 'translate-y-10');
+                startSlider(); // Start slider only after blowing candles
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>
